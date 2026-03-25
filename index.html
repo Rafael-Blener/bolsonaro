@@ -1,41 +1,70 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mapa Estratégico Renato Bolsonaro</title>
+    <title>Mapa Estratégico - Renato Bolsonaro</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        #map { height: 100vh; width: 100%; background: #f0f0f0; }
-        .legend {
-            background: white; padding: 15px; line-height: 25px;
-            position: absolute; bottom: 30px; left: 15px; z-index: 1000;
-            border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            font-size: 13px; color: #333;
-        }
-        .legend i { width: 14px; height: 14px; display: inline-block; margin-right: 10px; border-radius: 50%; border: 1px solid #777; }
-        .info-panel {
-            background: rgba(21, 101, 192, 0.9); color: white; padding: 10px 15px;
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        #map { height: 100vh; width: 100%; background: #f4f4f4; }
+        
+        .dashboard {
             position: absolute; top: 15px; right: 15px; z-index: 1000;
-            border-radius: 8px; font-weight: bold; font-size: 15px;
+            background: white; padding: 20px; border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15); min-width: 220px;
         }
+        
+        .progress-container {
+            background-color: #e0e0e0; border-radius: 10px; margin: 10px 0; height: 12px; width: 100%;
+        }
+        
+        .progress-bar {
+            background-color: #1565C0; height: 100%; border-radius: 10px; width: 41.4%;
+            transition: width 1s ease-in-out;
+        }
+        
+        .percent-label { font-size: 24px; font-weight: bold; color: #1565C0; text-align: center; display: block; }
+        .sub-label { font-size: 13px; color: #666; text-align: center; display: block; margin-bottom: 10px; }
+        
+        .stat-line { display: flex; justify-content: space-between; font-size: 14px; margin-top: 8px; border-top: 1px solid #eee; padding-top: 8px; }
+        .highlight-red { color: #d32f2f; font-weight: bold; }
+
+        .legend {
+            position: absolute; bottom: 30px; left: 15px; z-index: 1000;
+            background: white; padding: 15px; border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-size: 13px; line-height: 22px;
+        }
+        .legend i { width: 14px; height: 14px; display: inline-block; margin-right: 8px; border-radius: 50%; border: 1px solid #777; vertical-align: middle; }
     </style>
 </head>
 <body>
     <div id="map"></div>
-    <div class="info-panel">
-        Faltam Liderança: 378 Municípios
+    
+    <div class="dashboard">
+        <span class="percent-label">41.4%</span>
+        <span class="sub-label">Cobertura Territorial em SP</span>
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+        <div class="stat-line">
+            <span>Presença:</span>
+            <span style="font-weight:bold;">267 cidades</span>
+        </div>
+        <div class="stat-line">
+            <span>Faltam Liderança:</span>
+            <span class="highlight-red">378</span>
+        </div>
     </div>
+
     <div class="legend">
-        <b>Classificação das Alianças:</b><br>
-        <i style="background: #9C27B0;"></i> Múltiplas Dobras: 56<br>
-        <i style="background: #FDD835;"></i> À Definir pelo Renato: 79<br>
-        <i style="background: #1565C0;"></i> Liderança + Dobra Única: 132<br>
-        <i style="background: #2E7D32;"></i> Somente Liderança Local: 0<br>
-        <i style="background: #EF6C00;"></i> Somente Dobra Definida: 0<br>
+        <b>Categorias Ativas:</b><br>
+        <i style="background: #9C27B0;"></i> Múltiplas Dobras: <b>56</b><br>
+        <i style="background: #FDD835;"></i> À Definir pelo Renato: <b>79</b><br>
+        <i style="background: #1565C0;"></i> Liderança + Dobra Única: <b>132</b><br>
+        <i style="background: #2E7D32;"></i> Somente Liderança Local: <b>0</b><br>
+        <i style="background: #EF6C00;"></i> Somente Dobra Definida: <b>0</b><br>
     </div>
 
     <script>
@@ -70,7 +99,6 @@
                             layer.bindPopup(`
                                 <div style="min-width: 200px">
                                     <h3 style="margin: 0 0 8px; color: #1565C0;">${cityData.cidade}</h3>
-                                    <b>Status:</b> ${cityData.cat}<br>
                                     <b>Votos:</b> ${cityData.votos.toLocaleString('pt-BR')}<br>
                                     <hr style="margin: 8px 0; border: 0; border-top: 1px solid #eee;">
                                     <b>Liderança:</b> ${cityData.lider || 'N/A'}<br>
